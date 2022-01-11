@@ -79,7 +79,7 @@
       $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
    $imm_valid = $is_i_instr || $is_s_instr || $is_b_instr || $is_u_instr || $is_j_instr;
 
-   `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $func3 $func3_valid $imm_valid $opcode)
+   `BOGUS_USE($func3_valid $imm_valid)
 
    $imm[31:0] = $is_i_instr ? { {21{$instr[31]}}, $instr[30:20] } :
       $is_s_instr ? { {21{$instr[31]}}, $instr[30:25], $instr[11:7] } :
@@ -99,8 +99,6 @@
    $is_bgeu = $dec_bits ==? 11'bx_111_110_0011;
    $is_addi = $dec_bits ==? 11'bx_000_001_0011;
    $is_add = $dec_bits == 11'b0_000_011_0011;
-
-   `BOGUS_USE($imm $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
 
    // Assert these to end simulation (before Makerchip cycle limit).
    *passed = 1'b0;
