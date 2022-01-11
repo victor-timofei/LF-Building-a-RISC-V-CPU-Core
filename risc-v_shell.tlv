@@ -45,7 +45,9 @@
 
 
    // Program counter
-   $next_pc[31:0] = $reset ? 0 : ($pc + 4);
+   $next_pc[31:0] = $reset ? 0 :
+      $taken_br ? $br_tgt_pc :
+      ($pc + 4);
    $pc[31:0] = >>1$next_pc;
 
    // Instruction memory
@@ -103,6 +105,18 @@
    // Assert these to end simulation (before Makerchip cycle limit).
    *passed = 1'b0;
    *failed = *cyc_cnt > M4_MAX_CYC;
+
+   // Compute whether to branch
+   $taken_br = $is_beq ? $src1_value == $src2_value :
+      $is_bne ? $src1_value != $src2_value :
+      $is_blt ? ($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31]) :
+      $is_bge ? ($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31]) :
+      $is_bltu ? $src1_value < $src2_value :
+      $is_bgeu ? $src1_value >= $src2_value :
+      0;
+
+   // Branch target
+   $br_tgt_pc[31:0] = $pc + $imm;
 
    // Arithmetic Logic Unit
    $result[31:0] =
