@@ -36,6 +36,8 @@
    // Program counter
    $next_pc[31:0] = $reset ? 0 :
       $taken_br ? $br_tgt_pc :
+      $is_jal ? $br_tgt_pc :
+      $is_jalr ? $jalr_tgt_pc :
       ($pc + 4);
    $pc[31:0] = >>1$next_pc;
 
@@ -124,8 +126,11 @@
       $is_bgeu ? $src1_value >= $src2_value :
       0;
 
-   // Branch target
+   // Branch/JAL target
    $br_tgt_pc[31:0] = $pc + $imm;
+
+   // Jump and link register target
+   $jalr_tgt_pc[31:0] = $src1_value + $imm;
 
    // Arithmetic Logic Unit
    $sltu_rslt[31:0] = {31'b0, $src1_value < $src2_value};
