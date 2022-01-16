@@ -115,7 +115,6 @@
 
    // Treat all load and store instructions the same
    $is_load = $dec_bits ==? 11'bx_xxx_000_0011;
-   $is_s_instr = $dec_bits ==? 11'bx_xxx_010_0011;
 
    // Compute whether to branch
    $taken_br = $is_beq ? $src1_value == $src2_value :
@@ -168,6 +167,8 @@
          {31'b0, $src1_value[31]} ) :
       $is_sra ? $sra_rslt[31:0] :
       $is_srai ? $srai_rslt[31:0] :
+      $is_load  ? $src1_value + $imm :
+      $is_s_instr ? $src1_value + $imm :
       32'b0;
 
    // Assert these to end simulation (before Makerchip cycle limit).
@@ -175,8 +176,9 @@
    *failed = *cyc_cnt > M4_MAX_CYC;
 
    // Register file
-   m4+rf(32, 32, $reset, $rd_valid, $rd[4:0], $result, $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
-   //m4+dmem(32, 32, $reset, $addr[4:0], $wr_en, $wr_data[31:0], $rd_en, $rd_data)
+   $rf_data[31:0] = $is_load ? $ld_data : $result;
+   m4+rf(32, 32, $reset, $rd_valid, $rd[4:0], $rf_data, $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
+   m4+dmem(32, 32, $reset, $result[4:0], $is_s_instr, $src2_value, $is_load, $ld_data)
    m4+cpu_viz()
 \SV
    endmodule
