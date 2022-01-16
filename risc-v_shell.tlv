@@ -89,6 +89,31 @@
    $is_addi = $dec_bits ==? 11'bx_000_001_0011;
    $is_add = $dec_bits == 11'b0_000_011_0011;
 
+   $is_lui = $dec_bits ==? 11'bx_xxx_011_0111;
+   $is_auipc = $dec_bits ==? 11'bx_xxx_001_0111;
+   $is_jal = $dec_bits ==? 11'bx_xxx_110_1111;
+   $is_slti = $dec_bits ==? 11'bx_010_011_0011;
+   $is_sltiu = $dec_bits ==? 11'bx_011_001_0011;
+   $is_xori = $dec_bits ==? 11'bx_100_001_0011;
+   $is_ori = $dec_bits ==? 11'bx_110_001_0011;
+   $is_andi = $dec_bits ==? 11'bx_111_001_0011;
+   $is_slli = $dec_bits == 11'b0_001_001_0011;
+   $is_srli = $dec_bits == 11'b0_101_001_0011;
+   $is_srai = $dec_bits == 11'b1_101_001_0011;
+   $is_sub = $dec_bits == 11'b1_000_011_0011;
+   $is_sll = $dec_bits == 11'b0_001_011_0011;
+   $is_slt = $dec_bits == 11'b0_010_011_0011;
+   $is_sltu = $dec_bits == 11'b0_011_011_0011;
+   $is_xor = $dec_bits == 11'b0_100_011_0011;
+   $is_srl = $dec_bits == 11'b0_101_011_0011;
+   $is_sra = $dec_bits == 11'b1_101_011_0011;
+   $is_or = $dec_bits == 11'b0_110_011_0011;
+   $is_and = $dec_bits == 11'b0_111_011_0011;
+
+   // Treat all load and store instructions the same
+   $is_load = $dec_bits ==? 11'bx_xxx_000_0011;
+   $is_s_instr = $dec_bits ==? 11'bx_xxx_010_0011;
+
    // Compute whether to branch
    $taken_br = $is_beq ? $src1_value == $src2_value :
       $is_bne ? $src1_value != $src2_value :
